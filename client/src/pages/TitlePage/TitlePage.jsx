@@ -1,17 +1,16 @@
+import style from "./TitlePage.module.scss";
 import { useState, useEffect } from "react";
 import axios from "axios";
-// import style from "./TitlePage.module.scss";
-import ModalWindow from "../../components/Modal/ModalWindow";
+import ModalCreate from "../../components/Modal/ModalCreate";
+import ModalDelete from "../../components/Modal/ModalDelete";
+import ModalUpdate from "../../components/Modal/ModalUpdate";
 
-// { parentNodeId: "", nodeName: "" }
 const TitlePage = () => {
-  const [visibility, setVisibility] = useState(false);
+  const treeName = "MyTree";
+
   const [children, setChildren] = useState([]);
   const [treeTitle, setTreeTitle] = useState("");
-  const [inputValue, setInputValue] = useState("");
   const [id, setId] = useState("");
-
-  const treeName = "MyTree";
 
   const getAllTree = async () => {
     const res = await axios.post(
@@ -24,48 +23,82 @@ const TitlePage = () => {
     console.log(res.data);
   };
 
-  const createTreeNode = async () => {
+  const createTreeNode = async (id, inputValue) => {
     const res = await axios.post(
       `https://test.vmarmysh.com/api.user.tree.node.create?treeName=${treeName}&parentNodeId=${id}&nodeName=${inputValue}`
     );
     console.log(res.status);
   };
 
-  const deleteTreeNode = async () => {
+  const updateTreeNode = async (id, inputValue) => {
     const res = await axios.post(
-      `https://test.vmarmysh.com/api.user.tree.node.delete?treeName=${treeName}&nodeId=${parentNodeId}`
+      `https://test.vmarmysh.com/api.user.tree.node.rename?treeName=${treeName}&nodeId=${id}&newNodeName=${inputValue}`
+    );
+    console.log(res.status);
+  };
+
+  const deleteTreeNode = async (id) => {
+    const res = await axios.post(
+      `https://test.vmarmysh.com/api.user.tree.node.delete?treeName=${treeName}&nodeId=${id}`
     );
     console.log(res.status);
   };
 
   useEffect(() => {
     getAllTree();
-  }, [visibility]);
+  }, []);
 
   return (
     <>
-      <ul style={{ maxWidth: "800px", margin: "auto" }}>
-        <li
-          style={{ display: "flex", alignItems: "center", gap: "1%" }}
-          onClick={() => (visibility ? setVisibility(false) : setVisibility(true))}
-        >
+      <ul className={style.tree}>
+        <li>
           {treeTitle}
-          <ModalWindow
-            titleText={"Add"}
-            type={"createNodeElement"}
-            sendCreationRequest={createTreeNode}
-            setInputValue={setInputValue}
-            setVisibility={setVisibility}
-          />
+          
+          <ModalCreate sendRequest={createTreeNode} id={id} />
         </li>
-
-        {visibility && (
+        {
           <ul>
-            {children.map((el, index) => (
-              <li key={index}>{el.name}</li>
+            {children.map((el) => (
+              <li key={el.id}>
+                {el.name}
+
+                <ul>
+                  {el.children.map((el) => (
+                    <li key={el.id}>
+                      {el.name}
+
+                      <ul>
+                        {el.children.map((el) => (
+                          <li key={el.id}>
+                            {el.name}
+
+                            <div className={style.modalWrapper}>
+                              <ModalCreate sendRequest={createTreeNode} id={el.id} />
+                              <ModalUpdate sendRequest={updateTreeNode} id={el.id} />
+                              <ModalDelete sendRequest={deleteTreeNode} id={el.id} />
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+
+                      <div className={style.modalWrapper}>
+                        <ModalCreate sendRequest={createTreeNode} id={el.id} />
+                        <ModalUpdate sendRequest={updateTreeNode} id={el.id} />
+                        <ModalDelete sendRequest={deleteTreeNode} id={el.id} />
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className={style.modalWrapper}>
+                  <ModalCreate sendRequest={createTreeNode} id={el.id} />
+                  <ModalUpdate sendRequest={updateTreeNode} id={el.id} />
+                  <ModalDelete sendRequest={deleteTreeNode} id={el.id} />
+                </div>
+              </li>
             ))}
           </ul>
-        )}
+        }
       </ul>
     </>
   );
