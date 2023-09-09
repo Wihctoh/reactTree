@@ -22,7 +22,7 @@ const ModalWindow = ({ titleText, sendCreationRequest, setInputValue, setVisibil
         </div>
       </Modal>
 
-      <Group position="center">
+      <Group>
         <Button onClick={open} radius="xl" compact>
           +
         </Button>

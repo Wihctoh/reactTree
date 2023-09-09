@@ -1,19 +1,1 @@
-.TitleWrapper {
-  max-width: 500px;
-  margin: auto;
 
-  .wrapper {
-    display: flex;
-    align-items: center;
-    gap: 2%;
-  }
-
-  .TitleWrapperElements {
-    display: flex;
-    flex-direction: column;
-
-    P {
-      margin-top: 2%;
-    }
-  }
-}

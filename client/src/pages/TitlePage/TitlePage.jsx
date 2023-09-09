@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import style from "./TitlePage.module.scss";
+// import style from "./TitlePage.module.scss";
 import ModalWindow from "../../components/Modal/ModalWindow";
 
 // { parentNodeId: "", nodeName: "" }
@@ -17,9 +17,9 @@ const TitlePage = () => {
     const res = await axios.post(
       `https://test.vmarmysh.com/api.user.tree.get?treeName=${treeName}`
     );
-    setChildren(res.data.children);
     setTreeTitle(res.data.name);
     setId(res.data.id);
+    setChildren(res.data.children);
 
     console.log(res.data);
   };
@@ -44,11 +44,12 @@ const TitlePage = () => {
 
   return (
     <>
-      <div className={style.TitleWrapper}>
-        <div className={style.wrapper}>
-          <p onClick={() => (visibility ? setVisibility(false) : setVisibility(true))}>
-            {treeTitle}
-          </p>
+      <ul style={{ maxWidth: "800px", margin: "auto" }}>
+        <li
+          style={{ display: "flex", alignItems: "center", gap: "1%" }}
+          onClick={() => (visibility ? setVisibility(false) : setVisibility(true))}
+        >
+          {treeTitle}
           <ModalWindow
             titleText={"Add"}
             type={"createNodeElement"}
@@ -56,16 +57,16 @@ const TitlePage = () => {
             setInputValue={setInputValue}
             setVisibility={setVisibility}
           />
-        </div>
+        </li>
 
         {visibility && (
-          <div className={style.TitleWrapperElements}>
+          <ul>
             {children.map((el, index) => (
-              <p key={index}>{el.name}</p>
+              <li key={index}>{el.name}</li>
             ))}
-          </div>
+          </ul>
         )}
-      </div>
+      </ul>
     </>
   );
 };
