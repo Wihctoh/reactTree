@@ -3,13 +3,8 @@
   margin: auto;
 }
 
-// li {
-//   display: flex;
-//   align-items: center;
-//   gap: 1%;
-// }
-
 .modalWrapper {
+  max-width: max-content;
   display: flex;
   gap: 1%;
 }

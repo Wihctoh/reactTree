@@ -1,6 +1,7 @@
 // import { useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
 import { Modal, Button, Group } from "@mantine/core";
+import { AiFillDelete } from "react-icons/ai";
 
 const ModalDelete = ({ sendRequest, id }) => {
   const [opened, { open, close }] = useDisclosure(false);
@@ -20,9 +21,7 @@ const ModalDelete = ({ sendRequest, id }) => {
       </Modal>
 
       <Group>
-        <Button onClick={open} radius="xl" compact>
-          -
-        </Button>
+        <AiFillDelete onClick={open} size={"30px"} />
       </Group>
     </>
   );

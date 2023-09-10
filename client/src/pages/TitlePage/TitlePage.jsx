@@ -53,7 +53,6 @@ const TitlePage = () => {
       <ul className={style.tree}>
         <li>
           {treeTitle}
-          
           <ModalCreate sendRequest={createTreeNode} id={id} />
         </li>
         {
