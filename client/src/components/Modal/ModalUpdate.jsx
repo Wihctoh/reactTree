@@ -16,7 +16,7 @@ const ModalUpdate = ({ sendRequest, id }) => {
   return (
     <>
       <Modal opened={opened} onClose={close} centered title={"Update"}>
-        <Input placeholder="Node Name" onChange={(e) => setInpValue(e.target.value)} />
+        <Input placeholder="Enter new node name" onChange={(e) => setInpValue(e.target.value)} />
 
         <div style={{ display: "flex", gap: "2%", justifyContent: "flex-end", marginTop: "5%" }}>
           <Button onClick={close}>Cancel</Button>

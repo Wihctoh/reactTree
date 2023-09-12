@@ -9,14 +9,12 @@ const TitlePage = () => {
   const treeName = "MyTree";
 
   const [children, setChildren] = useState([]);
-  const [treeTitle, setTreeTitle] = useState("");
   const [id, setId] = useState("");
 
   const getAllTree = async () => {
     const res = await axios.post(
       `https://test.vmarmysh.com/api.user.tree.get?treeName=${treeName}`
     );
-    setTreeTitle(res.data.name);
     setId(res.data.id);
     setChildren(res.data.children);
 
@@ -48,58 +46,40 @@ const TitlePage = () => {
     getAllTree();
   }, []);
 
-  return (
-    <>
-      <ul className={style.tree}>
-        <li>
-          {treeTitle}
-          <ModalCreate sendRequest={createTreeNode} id={id} />
-        </li>
-        {
-          <ul>
-            {children.map((el) => (
-              <li key={el.id}>
-                {el.name}
+  const renderChildren = (children) => {
+    if (children.length === 0 || !children) {
+      return null;
+    }
 
-                <ul>
-                  {el.children.map((el) => (
-                    <li key={el.id}>
-                      {el.name}
-
-                      <ul>
-                        {el.children.map((el) => (
-                          <li key={el.id}>
-                            {el.name}
-
-                            <div className={style.modalWrapper}>
-                              <ModalCreate sendRequest={createTreeNode} id={el.id} />
-                              <ModalUpdate sendRequest={updateTreeNode} id={el.id} />
-                              <ModalDelete sendRequest={deleteTreeNode} id={el.id} />
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
-
-                      <div className={style.modalWrapper}>
-                        <ModalCreate sendRequest={createTreeNode} id={el.id} />
-                        <ModalUpdate sendRequest={updateTreeNode} id={el.id} />
-                        <ModalDelete sendRequest={deleteTreeNode} id={el.id} />
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-
-                <div className={style.modalWrapper}>
-                  <ModalCreate sendRequest={createTreeNode} id={el.id} />
-                  <ModalUpdate sendRequest={updateTreeNode} id={el.id} />
-                  <ModalDelete sendRequest={deleteTreeNode} id={el.id} />
-                </div>
-              </li>
-            ))}
-          </ul>
-        }
+    return (
+      <ul>
+        {children.map((el) => (
+          <li key={el.id}>
+            <span>
+              {el.name}
+              <div className={style.modalWrapper}>
+                <ModalCreate sendRequest={createTreeNode} id={el.id} />
+                <ModalUpdate sendRequest={updateTreeNode} id={el.id} />
+                <ModalDelete sendRequest={deleteTreeNode} name={el.name} id={el.id} />
+              </div>
+            </span>
+            {renderChildren(el.children)}
+          </li>
+        ))}
       </ul>
-    </>
+    );
+  };
+
+  return (
+    <div className={style.main}>
+      <div className={style.titleWrapper}>
+        <h1>{treeName}</h1>
+        <div className={style.modalWrapper}>
+          <ModalCreate sendRequest={createTreeNode} id={id} />
+        </div>
+      </div>
+      {renderChildren(children)}
+    </div>
   );
 };
 
