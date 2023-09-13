@@ -46,39 +46,68 @@ const TitlePage = () => {
     getAllTree();
   }, []);
 
-  const renderChildren = (children) => {
-    if (children.length === 0 || !children) {
-      return null;
-    }
+  const TreeNode = ({ data }) => {
+    const [isOpen, setIsOpen] = useState(false);
 
-    return (
-      <ul>
-        {children.map((el) => (
-          <li key={el.id}>
-            <span>
-              {el.name}
+    const toggleOpen = () => {
+      setIsOpen(!isOpen);
+    };
+
+    const renderChildren = () => {
+      if (!data.children || data.children.length === 0) {
+        return null;
+      }
+
+      return (
+        <ul>
+          {data.children.map((el) => (
+            <li key={el.id}>
+              <TreeNode data={el} />
+
               <div className={style.modalWrapper}>
                 <ModalCreate sendRequest={createTreeNode} id={el.id} />
                 <ModalUpdate sendRequest={updateTreeNode} id={el.id} />
-                <ModalDelete sendRequest={deleteTreeNode} name={el.name} id={el.id} />
+                <ModalDelete sendRequest={deleteTreeNode} id={el.id} name={el.name} />
               </div>
-            </span>
-            {renderChildren(el.children)}
-          </li>
-        ))}
-      </ul>
+            </li>
+          ))}
+        </ul>
+      );
+    };
+
+    return (
+      <div>
+        <div onClick={toggleOpen}>
+          {isOpen ? "▼" : "▶"} {data.name}
+        </div>
+
+        {isOpen && renderChildren()}
+      </div>
     );
   };
+  function titleNodeElements(node) {
+    return (
+      <div key={node.id}>
+        <TreeNode data={node} />
+
+        <div className={style.modalWrapper}>
+          <ModalCreate sendRequest={createTreeNode} id={node.id} />
+          <ModalUpdate sendRequest={updateTreeNode} id={node.id} />
+          <ModalDelete sendRequest={deleteTreeNode} id={node.id} name={node.name} />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={style.main}>
       <div className={style.titleWrapper}>
         <h1>{treeName}</h1>
-        <div className={style.modalWrapper}>
-          <ModalCreate sendRequest={createTreeNode} id={id} />
-        </div>
+
+        <ModalCreate sendRequest={createTreeNode} id={id} />
       </div>
-      {renderChildren(children)}
+
+      {children.map((node) => titleNodeElements(node))}
     </div>
   );
 };
