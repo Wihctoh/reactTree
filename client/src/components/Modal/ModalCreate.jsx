@@ -25,7 +25,7 @@ const ModalCreate = ({ sendRequest, id }) => {
       </Modal>
 
       <Group>
-        <AiFillFolderAdd onClick={open}  size={'30px'}/>
+        <AiFillFolderAdd onClick={open} size={"30px"} />
       </Group>
     </>
   );

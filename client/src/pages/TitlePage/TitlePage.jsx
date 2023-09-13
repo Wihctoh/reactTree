@@ -10,6 +10,7 @@ const TitlePage = () => {
 
   const [children, setChildren] = useState([]);
   const [id, setId] = useState("");
+  const [update, setUpdate] = useState(false);
 
   const getAllTree = async () => {
     const res = await axios.post(
@@ -25,6 +26,7 @@ const TitlePage = () => {
     const res = await axios.post(
       `https://test.vmarmysh.com/api.user.tree.node.create?treeName=${treeName}&parentNodeId=${id}&nodeName=${inputValue}`
     );
+    setUpdate(!update);
     console.log(res.status);
   };
 
@@ -32,6 +34,7 @@ const TitlePage = () => {
     const res = await axios.post(
       `https://test.vmarmysh.com/api.user.tree.node.rename?treeName=${treeName}&nodeId=${id}&newNodeName=${inputValue}`
     );
+    setUpdate(!update);
     console.log(res.status);
   };
 
@@ -39,12 +42,13 @@ const TitlePage = () => {
     const res = await axios.post(
       `https://test.vmarmysh.com/api.user.tree.node.delete?treeName=${treeName}&nodeId=${id}`
     );
+    setUpdate(!update);
     console.log(res.status);
   };
 
   useEffect(() => {
     getAllTree();
-  }, []);
+  }, [update]);
 
   const TreeNode = ({ data }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -62,13 +66,13 @@ const TitlePage = () => {
         <ul>
           {data.children.map((el) => (
             <li key={el.id}>
-              <TreeNode data={el} />
-
               <div className={style.modalWrapper}>
                 <ModalCreate sendRequest={createTreeNode} id={el.id} />
                 <ModalUpdate sendRequest={updateTreeNode} id={el.id} />
                 <ModalDelete sendRequest={deleteTreeNode} id={el.id} name={el.name} />
               </div>
+
+              <TreeNode data={el} />
             </li>
           ))}
         </ul>
@@ -88,13 +92,13 @@ const TitlePage = () => {
   function titleNodeElements(node) {
     return (
       <div key={node.id}>
-        <TreeNode data={node} />
-
         <div className={style.modalWrapper}>
           <ModalCreate sendRequest={createTreeNode} id={node.id} />
           <ModalUpdate sendRequest={updateTreeNode} id={node.id} />
           <ModalDelete sendRequest={deleteTreeNode} id={node.id} name={node.name} />
         </div>
+
+        <TreeNode data={node} />
       </div>
     );
   }
@@ -102,12 +106,12 @@ const TitlePage = () => {
   return (
     <div className={style.main}>
       <div className={style.titleWrapper}>
-        <h1>{treeName}</h1>
+        <h1 onClick={() => setUpdate(!update)}>{treeName}</h1>
 
         <ModalCreate sendRequest={createTreeNode} id={id} />
       </div>
 
-      {children.map((node) => titleNodeElements(node))}
+      {update && children.map((node) => titleNodeElements(node))}
     </div>
   );
 };
