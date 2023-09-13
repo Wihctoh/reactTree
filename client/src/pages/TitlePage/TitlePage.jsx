@@ -108,7 +108,7 @@ const TitlePage = () => {
       <div className={style.titleWrapper}>
         <h1 onClick={() => setUpdate(!update)}>{treeName}</h1>
 
-        <ModalCreate sendRequest={createTreeNode} id={id} />
+        {update && <ModalCreate sendRequest={createTreeNode} id={id} />}
       </div>
 
       {update && children.map((node) => titleNodeElements(node))}
