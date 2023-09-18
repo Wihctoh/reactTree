@@ -50,6 +50,7 @@ const TitlePage = () => {
     console.log(res.status);
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useMemo(getAllTree, [update]);
 
   const TreeNode = ({ data }) => {
